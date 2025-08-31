@@ -1,4 +1,4 @@
-import { createTask, getTasksByUserId } from "../services/task.service.js";
+import { createTask, getTasksByUserId, updateTaskById, deleteTaskById } from "../services/task.service.js";
 
 export const addTask = async (req, res) =>{
     try{
@@ -36,4 +36,40 @@ export const getTasks = async (req, res) => {
             message: err.message
         })
     }
+}
+
+export const updateTask = async (req, res) => {
+    const {id, title, description} = req.body;
+    try{
+        const updatedTask = await updateTaskById(id, title, description);
+        res.status(200).send({
+            success: true,
+            data: updatedTask,
+            message: "Task updated successfully"
+        })  
+    } catch(err){
+        console.log(err);
+        res.status(500).send({
+            success: false,
+            message: err.message
+        })
+    }
+}
+
+export const deleteTask = async (req, res) => {
+    const {id} = req.body;
+    try{
+        const deletedTask = await deleteTaskById(id);
+        res.status(200).send({
+            success: true,
+            data: deletedTask,
+            message: "Task deleted successfully"
+        })  
+    } catch(err){
+        console.log(err);
+        res.status(500).send({
+            success: false,
+            message: err.message
+        })
+    }   
 }
