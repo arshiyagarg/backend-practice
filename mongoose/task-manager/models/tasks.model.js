@@ -10,15 +10,12 @@ const taskSchema = new Schema({
         type: String,
         required: true
     },
-    status: {
-        type: Boolean,
-        default: false
-    },
     userId: {
         type: Schema.Types.ObjectId,
-        ref: User
+        ref: User,
+        required: true
     }
-})
+}, {timestamps: true})
 
 const taskModel = model("Task",taskSchema);
 export default taskModel;
