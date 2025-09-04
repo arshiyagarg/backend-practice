@@ -6,7 +6,7 @@ import LoginPage from './pages/LoginPage';
 import SettingsPage from './pages/SettingsPage';
 import ProfilePage from './pages/ProfilePage';
 import { Toaster } from 'react-hot-toast';
-import { useAuthStore } from './store/useAuth.store.js';
+import { useAuthStore } from './store/useAuthStore.js';
 import { Loader } from 'lucide-react';
 import Navbar from './components/Navbar';
 
