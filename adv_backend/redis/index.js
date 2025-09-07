@@ -5,15 +5,18 @@ const axios = require("axios").default;
 const app = express();
 
 app.get("/",async (req,res) => {
-    const cachedData = await redis.get("todolist");
-    if(cachedData){
-        return res.json(JSON.parse(cachedData));
-    }
+  const cachedData = await redis.get("todolist");
+  console.log("Cached value:", cachedData);
 
-    const {data} = await axios.get("https://jsonplaceholder.typicode.com/todos");
-    await redis.set("todolist",JSON.stringify(data));
-    await redis.expire("todolist",30)
-    res.json(data);
+  if (cachedData) {
+    return res.json(JSON.parse(cachedData));
+  }
+
+  const { data } = await axios.get("https://jsonplaceholder.typicode.com/todos");
+  await redis.set("todolist", JSON.stringify(data));
+  await redis.expire("todolist", 30);
+  res.json(data);
+
 })
 
 app.listen(5001, () => {
