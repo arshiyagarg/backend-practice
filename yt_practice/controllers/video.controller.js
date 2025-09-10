@@ -103,12 +103,8 @@ export const getAllVideos = async (req,res) => {
 
 export const getMyVideos = async (req, res) => {
     try{
-        const token = req.headers.authorization?.split(" ")[1];
-        if(!token){
-            return res.status(401).json({error: "No token is provided"});
-        }
-        const decodedUser = jwt.verify(token, process.env.JWT_TOKEN);
-        const videos = await Video.find({user_id: decodedUser._id});
+        const userId = req.user._id;
+        const videos = await Video.find({user_id: userId});
 
         if(!videos){
             return res.status(404).json({message: "No videos found"});
@@ -126,18 +122,86 @@ export const getMyVideos = async (req, res) => {
 export const getVideoById = async(req, res) => {
     try{
         const videoId = req.params.id;
-        if(!videoId){
-            return res.status(401).json({error: "Video id is a required parameter"});
-        }
+        const userId = req.user._id;
 
-        const video = await Video.findById(videoId);
-        if(!video){
-            return res.status(401).json({error: "Video does not exist"});
-        }
+        const video = await Video.findByIdAndUpdate(
+            videoId,
+            {
+                $addToSet: { viewedBy: userId },  
+            },
+            { new: true }  // Return the updated video document
+        );
 
-        res.status(201).json(video);
+        if (!video) return res.status(404).json({ error: "Video not found" });
+        res.status(200).json(video);
     } catch(error){
         console.log("something went wrong in getVideoById controller");
         res.status(400).send({message: "Internal Server error"});   
+    }
+}
+
+export const getCategoryVideos = async(req, res) => {
+    try{
+        const category = req.params.category;
+        if(!category){
+            return res.status(400).json({error: "Category is a required field"});
+        }
+
+        const videos = await Video.find({category}).sort({createdAt: -1});
+        if(!videos){
+            return res.status(400).json({message: "No videos are found"});
+        }
+
+        res.status(201).json(videos);
+    } catch(error){
+        console.log("something went wrong in getCategoryVideos controller");
+        res.status(400).send({message: "Internal Server error"});   
+    }
+}
+
+export const getVideoByTags = async (req,res) => {
+    try{
+        const tag = await req.params.tag;
+        if(!tag){
+            return res.status(400).json({error: "Tag is a required field"});
+        }
+
+        const videos = await Video.find({tags: tag}).sort({createdAt: -1});
+        if(!videos){
+            return res.status(400).json({message: "No videos are found"});
+        }
+
+        res.status(201).json(videos);
+    } catch(error){
+        console.log("something went wrong in getVideoByTags controller");
+        res.status(400).send({message: "Internal Server error"});  
+    }
+}
+
+export const likeVideo = async (req, res) => {
+    try{
+        const {videoId} = req.body;
+        const video =   await Video.findByIdAndUpdate(videoId , {
+            $addToSet:{likedBy:req.user._id},
+            $pull:{disLikedBy:req.user._id}
+        })
+        res.status(200).json({message:"Liked the video" , video})    
+    } catch (error) {
+        console.error("Fetch Error:", error);
+        res.status(500).json({ message: "Something went wrong" });
+    }
+}
+
+export const dislikeVideo = async (req, res) => {
+    try{
+        const {videoId} = req.body;
+        const video =   await Video.findByIdAndUpdate(videoId , {
+            $addToSet:{disLikedBy:req.user._id},
+            $pull:{likedBy:req.user._id}
+        })
+        res.status(200).json({message:"Disliked the video" , video})    
+    } catch (error) {
+        console.error("Fetch Error:", error);
+        res.status(500).json({ message: "Something went wrong" });
     }
 }
