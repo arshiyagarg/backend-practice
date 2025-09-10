@@ -5,7 +5,7 @@ export const protectRoute = async(req,res,next) => {
     try{
         const token = req.headers.authorization?.split(" ")[1] // Using bearer token we have to input it manually in headers 
         if(!token){
-            return res.status(401).json({error: "No message is provided"});
+            return res.status(401).json({error: "No token is provided"});
         }
 
         const decodedUser = jwt.verify(token,process.env.JWT_TOKEN);

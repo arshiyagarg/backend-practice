@@ -1,5 +1,6 @@
 import cloudinary from "../config/cloudinary.config.js";
 import Video from "../models/video.model.js";
+import jwt from "jsonwebtoken";
 
 export const uploadVideo = async (req,res) => {
     const { title, description, category, tags} = req.body;
@@ -80,5 +81,63 @@ export const updateVideo = async (req,res) => {
     } catch(error){
         console.log("something went wrong in uploadVideo controller");
         res.status(400).send({message: "Internal Server error"});
+    }
+}
+
+export const getAllVideos = async (req,res) => {
+    try{
+        const video = await Video.find();
+        console.log(video);
+        if(!video){
+            res.json({error: "Something went wrong"});
+        }
+
+        res.status(201).json({
+            video
+        })
+    } catch(error){
+        console.log("something went wrong in getAllVideo controller");
+        res.status(400).send({message: "Internal Server error"});
+    }
+}
+
+export const getMyVideos = async (req, res) => {
+    try{
+        const token = req.headers.authorization?.split(" ")[1];
+        if(!token){
+            return res.status(401).json({error: "No token is provided"});
+        }
+        const decodedUser = jwt.verify(token, process.env.JWT_TOKEN);
+        const videos = await Video.find({user_id: decodedUser._id});
+
+        if(!videos){
+            return res.status(404).json({message: "No videos found"});
+        }
+
+        res.status(201).json({
+            videos
+        })
+    } catch(error){
+        console.log("something went wrong in getMyVideos controller");
+        res.status(400).send({message: "Internal Server error"});
+    }
+} 
+
+export const getVideoById = async(req, res) => {
+    try{
+        const videoId = req.params.id;
+        if(!videoId){
+            return res.status(401).json({error: "Video id is a required parameter"});
+        }
+
+        const video = await Video.findById(videoId);
+        if(!video){
+            return res.status(401).json({error: "Video does not exist"});
+        }
+
+        res.status(201).json(video);
+    } catch(error){
+        console.log("something went wrong in getVideoById controller");
+        res.status(400).send({message: "Internal Server error"});   
     }
 }
