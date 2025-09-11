@@ -75,3 +75,21 @@ export const login = async (req,res) => {
         res.status(400).send({message: "Internal Server error"});
     }
 }
+
+export const updateProfile = async (req,res) => {
+    const {channelName, phone} = req.body;
+    let updatedData = {channelName, phone};
+    try{
+        if(req.file && req.files.logo){
+            const uploadedImage = await cloudinary.uploader.upload(req.files.logo.tempFilePath);
+            updatedData.logoUrl = uploadedImage.secure_url;
+            updatedData.logoId = uploadedImage.public_id;   
+        }
+
+        const updatedUser = await User.findByIdAndUpdate(req.user._id,updatedData, {new:true});
+        res.status(200).json(updatedUser);
+    } catch(error){
+        console.log("something went wrong in updateProfile");
+        res.status(400).send({message: "Internal Server error"});
+    }
+}
