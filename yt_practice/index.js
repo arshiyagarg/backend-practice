@@ -6,6 +6,7 @@ import bodyParser from "body-parser";
 
 import userRoutes from "./routes/user.routes.js";
 import videoRoutes from "./routes/video.routes.js";
+import commentRoutes from "./routes/comment.route.js";
 
 dotenv.config();
 const app = express();
@@ -24,6 +25,7 @@ app.get("/",(req,res) => {
 
 app.use("/api/user",userRoutes);
 app.use("/api/video",videoRoutes);
+app.use("/api/comment",commentRoutes);
 
 connectDB();
 
