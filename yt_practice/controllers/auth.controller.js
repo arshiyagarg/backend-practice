@@ -93,3 +93,43 @@ export const updateProfile = async (req,res) => {
         res.status(400).send({message: "Internal Server error"});
     }
 }
+
+export const subscribe = async (req , res)=>{
+  try {
+    const {channelId} = req.body 
+    
+    if(req.user._id === channelId){
+      return res.status(400).json({error:"You cannot subscribe to yourself"})
+    }
+
+    const isSubscribed = await User.findOne({
+        _id: req.user._id,
+        subscribedChannels: channelId
+    });
+
+
+    if(!isSubscribed){
+        const currentUser =   await User.findByIdAndUpdate(req.user._id , {
+            $addToSet:{subscribedChannels:channelId}
+        })
+
+        const subscribedUser =   await User.findByIdAndUpdate(channelId , {
+            $inc:{subscribers:1}
+        })
+
+        return res.status(200).json({
+            message:"Subscribed Successfully✅",
+            data:{currentUser,
+            subscribedUser
+            }}
+        )
+    }    
+
+    res.status(200).json({ message:"Subscribed Already" })
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ error: "something went wrong", message: error.message });
+  }
+}
