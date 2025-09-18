@@ -23,8 +23,65 @@ export const createComment = async (req, res) => {
             message: "Comment Added",
             data: newComment
         })
-    } catch(error){
-        console.log("Error in createComment controller: ",error.message);
-        res.status(500).json({message:"Internal server error"});
-    }
+    } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ error: "something went wrong", message: error.message });
+  }
+}
+
+export const updateComment = async (req, res) =>{
+    try{
+        const { commentId } = req.params;
+        const { content } = req.body;
+        const userId = req.user._id
+        if(!content){
+            return res.status(400).json({error: "Required inputs are not given"})
+        }
+
+        const updatedComment = await Comment.findOneAndUpdate(
+            { _id: commentId, author: userId }, 
+            { content },
+            { new: true } 
+        );
+
+        if (!updatedComment) {
+            return res.status(403).json({ error: "Not authorized to update this post or post not found" });
+        }
+
+        res.status(200).json({
+            message: "Post updated successfully",
+            post: updatedComment,
+        });
+    } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ error: "something went wrong", message: error.message });
+  }
+}
+
+export const deleteComment = async (req, res) =>{
+    try{
+        const { commentId } = req.params;
+        const userId = req.user._id;
+        const deletedComment = await Comment.findOneAndDelete(
+            {_id: commentId, author: userId}
+        )
+
+        if(!deletedComment){
+            return res.status(403).json({ error: "Not authorized to delete this post or post not found" });
+        }
+
+        res.status(200).json({
+            message: "Post has been successfully deleted",
+            deletedComment
+        })
+    } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ error: "something went wrong", message: error.message });
+  }
 }
