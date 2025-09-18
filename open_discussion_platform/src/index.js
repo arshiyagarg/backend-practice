@@ -10,14 +10,14 @@ import { connectDB } from "./lib/db.config.js";
 
 dotenv.config();
 
-const PORT = process.env.PORT || 5050;
+const PORT = process.env.PORT || 8080;
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
-app.use("/api/auth",authRoutes);
-app.use("/api/post",postRoutes);
-app.use("/api/comment",commentRoutes);
+app.use("/auth",authRoutes);
+app.use("/post",postRoutes);
+app.use("/comment",commentRoutes);
 
 app.get("/", (req,res) =>  {
     res.status(200).send("Helloo from Server")

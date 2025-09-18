@@ -8,6 +8,5 @@ router.get("/signup",signup);
 router.get("/login",login);
 router.get("/logout",logout);
 router.get("/check",protectRoute, checkAuth);
-// router.put("/update")
 
 export default router
