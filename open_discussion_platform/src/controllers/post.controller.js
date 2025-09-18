@@ -32,15 +32,15 @@ export const createPost = async (req,res) => {
 export const getAllPosts = async (req, res) =>{
     try{
         const posts = await Post.find();
-        res.status(200).json({
-            posts
-        })
+        res.posts = posts
+        res.status(200).json(posts);
+        console.log(res.posts)
     } catch (error) {
-    console.log(error);
-    res
-      .status(500)
-      .json({ error: "something went wrong", message: error.message });
-  }
+        console.log(error);
+        res
+        .status(500)
+        .json({ error: "something went wrong", message: error.message });
+    }
 }
 
 export const updatePost = async (req, res) =>{
@@ -62,6 +62,7 @@ export const updatePost = async (req, res) =>{
             return res.status(403).json({ error: "Not authorized to update this post or post not found" });
         }
 
+        res.data = updatedPost;
         res.status(200).json({
             message: "Post updated successfully",
             post: updatedPost,
