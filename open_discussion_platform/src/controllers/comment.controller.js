@@ -50,6 +50,7 @@ export const updateComment = async (req, res) =>{
             return res.status(403).json({ error: "Not authorized to update this post or post not found" });
         }
 
+        res.data = updatedComment;
         res.status(200).json({
             message: "Post updated successfully",
             post: updatedComment,
