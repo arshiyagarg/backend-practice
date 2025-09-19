@@ -42,5 +42,17 @@ export const usePostStore = create((set, get) => ({
         } catch (error) {
             toast.error(error.response.data.message);
         }
-    }
+    }, 
+    getPostById: async (postId) => {
+        set({ isPostsLoading: true, seletedPost: null });
+        try {
+            const res = await axiosInstance.get(`/post/${postId}`);
+            set({ seletedPost: res.data.post });
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Error fetching post");
+        } finally {
+            set({ isPostsLoading: false });
+        }
+    },
+
 }))
