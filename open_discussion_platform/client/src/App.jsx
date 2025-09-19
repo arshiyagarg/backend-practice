@@ -5,6 +5,7 @@ import SignUpPage from './pages/SignUpPage';
 import LoginPage from './pages/LoginPage';
 import SettingsPage from './pages/SettingsPage';
 import ProfilePage from './pages/ProfilePage';
+import PostPage from './pages/PostPage';
 import { Toaster } from 'react-hot-toast';
 import { useAuthStore } from './store/useAuthStore.js';
 import { Loader } from 'lucide-react';
@@ -30,14 +31,14 @@ const {authUser , checkAuth , isCheckingAuth } = useAuthStore();
 
   return (
     <div>
-      <Navbar/>
+      <Navbar />
       <Routes>
-      <Route path="/" element={authUser ? <HomePage /> : <Navigate to="/login" />} />
+        <Route path="/" element={authUser ? <HomePage /> : <Navigate to="/signup" />} />
         <Route path="/signup" element={!authUser ? <SignUpPage /> : <Navigate to="/" />} />
         <Route path="/login" element={!authUser ? <LoginPage /> : <Navigate to="/" />} />
+        <Route path="/post/:postId" element={authUser ? <PostPage /> : <Navigate to="/signup" />} />
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/profile" element={authUser ? <ProfilePage /> : <Navigate to="/login" />} />
-
       </Routes>
       <Toaster />
     </div>

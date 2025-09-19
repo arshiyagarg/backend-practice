@@ -86,3 +86,26 @@ export const deleteComment = async (req, res) =>{
       .json({ error: "something went wrong", message: error.message });
   }
 }
+
+export const getAllComments = async (req, res) => {
+  try {
+    const { postId } = req.params;
+
+    const comments = await Comment.find({ parentPost: postId });
+
+    if (comments.length === 0) {
+      return res.status(200).json({
+        message: "There are no comments yet!",
+        comments: [],
+      });
+    }
+
+    res.status(200).json({
+      message: "Comments successfully fetched",
+      comments,
+    });
+  } catch (error) {
+    console.log("Error in getAllComments:", error.message);
+    res.status(500).json({ error: "Something went wrong", message: error.message });
+  }
+};

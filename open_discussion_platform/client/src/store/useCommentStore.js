@@ -1,9 +1,11 @@
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios.js";
 import toast from "react-hot-toast";
+import { usePostStore } from "./usePostStore.js";
 
 export const useCommentStore = create((set, get) => ({
     selectedComment: null,
+    comments: [],
 
     createComment: async(data) => {
         try {
@@ -26,6 +28,15 @@ export const useCommentStore = create((set, get) => ({
             const res = await axiosInstance.delete(`/comment/${seletedPost._id}`);
             set({selectedComment: null})
             toast.success("Post deleted Successfully");
+        } catch (error) {
+            toast.error(error.response.data.message);
+        }
+    },
+    getAllComments: async() => {
+        try{
+            const postId = usePostStore().seletedPost._id;
+            const res = await axiosInstance.get(`/comment/${postId}`);
+            set({comments: res.data.comments});
         } catch (error) {
             toast.error(error.response.data.message);
         }
