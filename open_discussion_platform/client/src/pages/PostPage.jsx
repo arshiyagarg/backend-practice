@@ -1,9 +1,10 @@
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { usePostStore } from "../store/postStore";
+import { usePostStore } from "../store/usePostStore.js";
+import CommentsSection from "../components/CommentSection";
 
 const PostPage = () => {
-  const { id } = useParams(); // /post/:id route param
+  const { id } = useParams(); 
   const { seletedPost, isPostsLoading, getPostById } = usePostStore();
 
   useEffect(() => {
@@ -31,10 +32,11 @@ const PostPage = () => {
   return (
     <div className="max-w-3xl mx-auto mt-6 p-6 bg-white shadow-md rounded-lg">
       <h1 className="text-2xl font-bold mb-4">{seletedPost.title}</h1>
-      <p className="text-gray-700 mb-4">{seletedPost.content}</p>
       <span className="text-sm text-gray-500">
         By {seletedPost.author?.username || "Anonymous"}
       </span>
+
+      <CommentsSection postId={id} />
     </div>
   );
 };

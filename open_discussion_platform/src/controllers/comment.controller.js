@@ -19,10 +19,7 @@ export const createComment = async (req, res) => {
         }
 
         await newComment.save();
-        res.status(201).json({
-            message: "Comment Added",
-            data: newComment
-        })
+        res.status(201).json(newComment)
     } catch (error) {
     console.log(error);
     res
@@ -51,10 +48,7 @@ export const updateComment = async (req, res) =>{
         }
 
         res.data = updatedComment;
-        res.status(200).json({
-            message: "Post updated successfully",
-            post: updatedComment,
-        });
+        res.status(200).json(updatedComment);
     } catch (error) {
     console.log(error);
     res
@@ -75,10 +69,7 @@ export const deleteComment = async (req, res) =>{
             return res.status(403).json({ error: "Not authorized to delete this post or post not found" });
         }
 
-        res.status(200).json({
-            message: "Post has been successfully deleted",
-            deletedComment
-        })
+        res.status(200).json(deletedComment)
     } catch (error) {
     console.log(error);
     res
@@ -100,10 +91,7 @@ export const getAllComments = async (req, res) => {
       });
     }
 
-    res.status(200).json({
-      message: "Comments successfully fetched",
-      comments,
-    });
+    res.status(200).json(comments);
   } catch (error) {
     console.log("Error in getAllComments:", error.message);
     res.status(500).json({ error: "Something went wrong", message: error.message });
