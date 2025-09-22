@@ -42,7 +42,8 @@ export const useCommentStore = create((set, get) => ({
             const res = await axiosInstance.get(`/comment/${postId}`);
             set({comments: res.data});
         } catch (error) {
-            toast.error(error.response.data.message);
+            console.log( "Error in getAllComments" + error)
+            toast.error(error?.response?.data?.message || "Failed to fetch comments");
         }
     }
 }))
