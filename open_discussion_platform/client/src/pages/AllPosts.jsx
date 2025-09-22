@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { usePostStore } from "../store/postStore";
+import { usePostStore } from "../store/usePostStore.js";
 import PostCard from "../components/PostCard";
 
 const AllPosts = () => {
@@ -17,7 +17,7 @@ const AllPosts = () => {
     );
   }
 
-  if (!isPostsLoading && posts.length === 0) {
+  if (!isPostsLoading && (!posts || posts.length === 0)) {
     return (
       <div className="flex justify-center items-center h-64 text-gray-500">
         No posts yet. Be the first to create one!

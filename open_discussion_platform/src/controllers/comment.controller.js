@@ -85,10 +85,7 @@ export const getAllComments = async (req, res) => {
     const comments = await Comment.find({ parentPost: postId });
 
     if (comments.length === 0) {
-      return res.status(200).json({
-        message: "There are no comments yet!",
-        comments: [],
-      });
+      return res.status(200).json([]);
     }
 
     res.status(200).json(comments);

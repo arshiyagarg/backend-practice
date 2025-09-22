@@ -33,10 +33,7 @@ export const createPost = async (req, res) => {
 export const getAllPosts = async (req, res) => {
   try {
     const posts = await Post.find().populate("author", "username email"); // optional populate
-    res.status(200).json({
-      message: "Posts fetched successfully",
-      posts,   
-    });
+    res.status(200).json(posts);
   } catch (error) {
     console.error(error);
     res
