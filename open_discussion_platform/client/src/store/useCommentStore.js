@@ -7,9 +7,13 @@ export const useCommentStore = create((set, get) => ({
     selectedComment: null,
     comments: [],
 
+    setSelectedComment: (comment) => set({ selectedComment: comment }),
     createComment: async(data) => {
         try {
             const res = await axiosInstance.post("/comment", data);
+            set((state) => ({
+                comments: [...state.comments, res.data],
+            }));
             toast.success("Comment posted Successfully");
         } catch (error) {
             toast.error(error.response.data.message);
@@ -25,7 +29,7 @@ export const useCommentStore = create((set, get) => ({
     },
     deleteComment: async() => {
         try {
-            const res = await axiosInstance.delete(`/comment/${seletedPost._id}`);
+            await axiosInstance.delete(`/comment/${seletedPost._id}`);
             set({selectedComment: null})
             toast.success("Post deleted Successfully");
         } catch (error) {
@@ -36,7 +40,7 @@ export const useCommentStore = create((set, get) => ({
         try{
             const postId = usePostStore().seletedPost._id;
             const res = await axiosInstance.get(`/comment/${postId}`);
-            set({comments: res.data.comments});
+            set({comments: res.data});
         } catch (error) {
             toast.error(error.response.data.message);
         }
